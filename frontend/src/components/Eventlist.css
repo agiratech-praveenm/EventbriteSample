@@ -1,0 +1,24 @@
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 10px;
+}
+
+.event-card {
+    height: 300px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+.myevents{
+    background-color: whitesmoke;
+}
+
+.event-name{
+    max-height: 3.6em; /* Adjust the height as needed */
+  overflow: hidden;
+  overflow-wrap: break-word;
+}

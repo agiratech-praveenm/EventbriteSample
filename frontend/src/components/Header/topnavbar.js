@@ -94,6 +94,7 @@
                     },
                 });
                 const events = response.data;
+                console.log(events);
                 navigate('/myevents',{state:{events}});
             } catch(error){
                 console.error('Error fetching events:', error);
