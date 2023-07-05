@@ -4,10 +4,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const signupRoutes = require('./routes/signup');
 const signinRoutes = require('./routes/signin');
+const eventBriteAccessRoutes = require('./routes/eventbriteaccess')
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
 // Connect to MongoDB
 mongoose.connect('mongodb://127.0.0.1:27017/signupdb', {
@@ -23,6 +27,8 @@ db.once('open', () => {
 // Routes
 app.use('/api/signup', signupRoutes);
 app.use('/api/signin', signinRoutes);
+app.use('/api/eventbriteaccess',eventBriteAccessRoutes);
+// app.use('/api/')
 
 // Start the server
 app.listen(8080, () => {

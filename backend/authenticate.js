@@ -6,6 +6,7 @@ const app = express();
 const API_KEY = 'O5KFH4EK4Y7AO6CH6B';
 const CLIENT_SECRET = 'KK44MXXM2YJRFIP7AM3WNX5LYPY4DUETKCLQD3VH7UTAMGEHV4';
 const REDIRECT_URI = 'http://localhost:3000/oauth/redirect';
+const username='Luffy';
 
 app.get('/',(req,res)=>{
     res.send('WELCOME TO EVENTBRITE EVENTS FETCHER we fill fetch ur events from eventbrite account');
@@ -13,7 +14,7 @@ app.get('/',(req,res)=>{
 
 // Create a route to handle the redirect
 app.get('/authorize', (req, res) => {
-  const authorizationUrl = `https://www.eventbrite.com/oauth/authorize?response_type=code&client_id=${API_KEY}&redirect_uri=${REDIRECT_URI}`;
+  const authorizationUrl = `https://www.eventbrite.com/oauth/authorize?response_type=code&client_id=${API_KEY}&redirect_uri=${REDIRECT_URI}&username=${username}`;
   console.log(authorizationUrl);
   // Redirect the user to the Eventbrite authorization URL
   res.redirect(authorizationUrl);
