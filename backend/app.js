@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const signupRoutes = require('./routes/signup');
 const signinRoutes = require('./routes/signin');
-const eventBriteAccessRoutes = require('./routes/eventbriteaccess')
+const eventBriteAccessRoutes = require('./routes/eventbriteaccess');
+const jwtverifyroute = require('./routes/JWTverify');
+const myevents = require('./routes/myevents');
 
 const app = express();
 app.use(bodyParser.json());
@@ -28,6 +30,8 @@ db.once('open', () => {
 app.use('/api/signup', signupRoutes);
 app.use('/api/signin', signinRoutes);
 app.use('/api/eventbriteaccess',eventBriteAccessRoutes);
+app.use('/api/user',jwtverifyroute);
+app.use('/api/myevents',myevents);
 // app.use('/api/')
 
 // Start the server

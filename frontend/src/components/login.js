@@ -34,8 +34,8 @@ const Login=()=>{
             // Store the JWT token in local storage
             localStorage.setItem('token', response.data.token);
 
-            navigate('/',{state:{username}});
-            console.log('Usernameonlogin:',username);
+            navigate('/'); //,{state:{username}});
+            
 
         } catch(error){
             console.error('SignIn failed:', error);

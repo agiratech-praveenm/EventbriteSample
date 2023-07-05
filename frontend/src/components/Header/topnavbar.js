@@ -1,16 +1,43 @@
-import React,{useState} from 'react';
-import { AppBar, IconButton, Toolbar, Typography, Stack, Button, Menu, MenuItem} from "@mui/material";
+import React,{useState,useEffect} from 'react';
+import { AppBar, IconButton, Toolbar, Typography, Stack, Button, Menu, MenuItem,Modal, Box} from "@mui/material";
 import CatchingPokemonIcon from "@mui/icons-material/CatchingPokemon";
 import {Link, useNavigate} from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
+
+const EventbriteAccessConfirmModal =({open, onClose, onConnect})=>{
+    return(
+        <Modal open={open} onClose={onClose}>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    textAlign: 'center'
+                }}
+            >
+                <Typography variant='h6' component='div'>
+                    Please ensure that you are logged into Eventbrite. If not open new tab and log in to your Eventbrite Account
+                </Typography>
+                <Button variant='contained' onClick={onConnect}>Connect Eventbrite</Button>
+            </Box>
+        </Modal>
+    )
+}
  
 
-const NavBar =({username})=>{
+const NavBar =()=>{
     
     const navigate =useNavigate();
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [eventbriteModalOpen, setEventbriteModalOpen] = useState(false);
+    const [username,setUsername] = useState('');
 
     const handleMenuOpen = (event)=> {
         setAnchorEl(event.currentTarget);
@@ -20,11 +47,24 @@ const NavBar =({username})=>{
         setAnchorEl(null);
     }
 
-    const handleLogOut=()=>{
-        const username = null;
-        localStorage.removeItem('token'); //clearing JWT token from localStorage during logout
-        navigate('/',{state:{username}});
+    const handleLogOut = () => {
+        localStorage.removeItem('token'); // Clearing JWT token from localStorage during logout
+        setUsername(null);
+        navigate('/');
+      };
+
+    const handleOpenEventbriteModal=()=>{
+        setEventbriteModalOpen(true);
     }
+
+    const handleCloseEventbriteModal = () => {
+        setEventbriteModalOpen(false);
+    };
+    
+    const handleConnectEventbrite = () => {
+        handleAccessEventbrite();
+        setEventbriteModalOpen(false);
+    };
 
     const handleAccessEventbrite= async ()=>{
         try{
@@ -45,6 +85,42 @@ const NavBar =({username})=>{
         }
     }
 
+    const handleMyEvents= async() =>{
+        try{
+            const token=localStorage.getItem('token');
+            const response = await axios.get('http://localhost:8080/api/myevents',{
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const events = response.data;
+            console.log(events);
+        } catch(error){
+            console.error('Error fetching events:', error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchUsername = async () => {
+          try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:8080/api/user', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            const user = response.data;
+            setUsername(user.username);
+          } catch (error) {
+            console.error('Error fetching user information:', error);
+          }
+        };
+    
+        if (localStorage.getItem('token')) {
+          fetchUsername();
+        }
+      }, []);
+
 
     return (
         <AppBar position='static'>
@@ -55,8 +131,8 @@ const NavBar =({username})=>{
                 </IconButton>
                 <Typography variant='h6' component='div' sx={{flexGrow: 1}}/>
                 <Stack direction='row' spacing={1}> 
-                    <Button color='inherit'>Features</Button>
-                    <Button color='inherit'>Pricing</Button>
+                    <Button color='inherit' onClick={handleMyEvents}>MyEvents</Button>
+                    <Button color='inherit'>BuyTickets</Button>
                     <Button color='inherit'>About</Button>
                     {username ? (
                     <>
@@ -68,7 +144,7 @@ const NavBar =({username})=>{
                             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
-                        <MenuItem onClick={handleAccessEventbrite}>Access Eventbrite</MenuItem>
+                        <MenuItem onClick={handleOpenEventbriteModal}>Access Eventbrite</MenuItem>
                         <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                         </Menu>
                     </>
@@ -80,6 +156,11 @@ const NavBar =({username})=>{
                     )}
                 </Stack>
             </Toolbar>
+            <EventbriteAccessConfirmModal
+            open={eventbriteModalOpen}
+            onClose={handleCloseEventbriteModal}
+            onConnect={handleConnectEventbrite}
+            />
         </AppBar>
     )
 }

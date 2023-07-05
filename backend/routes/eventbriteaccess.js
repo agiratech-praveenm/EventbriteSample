@@ -51,7 +51,7 @@ router.get('/:user/store_access_token/', async (req, res) => {
             { new: true }
         );
 
-        res.json({ message: 'Eventbrite access token stored successfully' });
+        res.redirect('http://localhost:3000/')
     } catch (error) {
         console.error('Error exchanging authorization code for access token:', error);
         res.status(500).send('Error exchanging authorization code for access token');
