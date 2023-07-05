@@ -7,6 +7,7 @@ import { BrowserRouter,
 import Homepage from './components/homepage';
 import Login from './components/login';
 import Signup from './components/signup';
+import EventsList from './components/myevents';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Homepage/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="/signup" element={<Signup/>}/>
+          <Route path="/myevents" element={<EventsList/>}/>
         </Routes>
     </BrowserRouter>
     </div>
